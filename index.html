@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Motion Archive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --green: #ccff00; --bg: #000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); color: #fff; font-family: 'Anton', sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden; padding: 20px;
+        }
+
+        .main-title { font-size: 6rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 80px; text-align: center; line-height: 1; }
+
+        .char { display: inline-block; opacity: 0; animation: simple-blink 1s forwards; }
+        @keyframes simple-blink { 
+            0% { opacity: 0; } 
+            30% { opacity: 1; } 
+            60% { opacity: 0; } 
+            100% { opacity: 1; } 
+        }
+
+        .ming-font { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.2rem; }
+        .outer-box { display: flex; border: 1px solid #444; padding: 14px 35px; gap: 70px; opacity: 0; transition: opacity 0.5s; height: 68px; align-items: center; }
+        .show { opacity: 1; }
+
+        .btn { position: relative; height: 40px; cursor: pointer; display: flex; align-items: center; overflow: hidden; }
+        .btn-left { background: var(--green); color: #000; padding: 0 20px; transition: background 0.3s; }
+        .btn-left:hover { background: #fff; }
+        .content-layer { display: inline-flex; align-items: center; gap: 8px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .btn-left:hover .content-layer { transform: translateX(22px); }
+        .play-icon { opacity: 0; position: absolute; left: 14px; font-size: 18px; font-weight: 900; transition: 0.3s; }
+        .btn-left:hover .play-icon { opacity: 1; }
+        .arrow { font-size: 24px; font-weight: 900; transition: 0.3s; }
+        .btn-left:hover .arrow { opacity: 0; }
+
+        .btn-right { color: #fff; padding: 0 10px; }
+        .underline { position: absolute; bottom: 8px; left: 10px; right: 10px; height: 2px; background: #fff; transition: 0.3s; transform-origin: right; }
+        .btn-right:hover .underline { transform: scaleX(0); }
+        .footer { position: absolute; bottom: 40px; font-weight: 400; opacity: 0; transition: 1s; font-size: 1rem; letter-spacing: 0.05em; }
+
+        @media (max-width: 600px) {
+            .main-title { font-size: 3.5rem; margin-bottom: 40px; }
+            .outer-box { gap: 30px; padding: 10px 20px; }
+            .ming-font { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="main-title" id="title">EDITED VIDEO</h1>
+    <div class="outer-box" id="outer">
+        <div class="btn btn-left" onclick="enter(true)">
+            <span class="play-icon">▶</span>
+            <div class="content-layer ming-font"><span>有声世界</span><span class="arrow">↗</span></div>
+        </div>
+        <div class="btn btn-right ming-font" onclick="enter(false)">六根清净<span class="underline"></span></div>
+    </div>
+    <div class="footer" id="footer">© 2026 睦睦 祥祥</div>
+
+    <script>
+        const titleEl = document.getElementById('title');
+        const text = titleEl.textContent;
+        titleEl.textContent = '';
+        text.split('').forEach((char, i) => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            span.style.animationDuration = `${0.3 + Math.random() * 0.7}s`;
+            span.style.animationDelay = `${Math.random() * 0.5}s`;
+            titleEl.appendChild(span);
+        });
+
+        setTimeout(() => {
+            document.getElementById('outer').classList.add('show');
+            document.getElementById('footer').style.opacity = 1;
+        }, 1000);
+        // 修改后的 enter 函数
+        function enter(audio) {
+            // 假设你的主站文件名为 main.html
+            // 通过 url 参数 ?music=1 (有声) 或 ?music=0 (无声) 进行传递
+            const musicParam = audio ? '1' : '0';
+            window.location.href = `main.html?music=${musicParam}`;
+        }
+    </script>
+</body>
+</html>
