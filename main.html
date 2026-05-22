@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Studio Lumio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <!-- 引入了一款非常正经、高级且适合做副标题的现代无衬线英文字体 Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; overflow: hidden; font-family: 'Anton', sans-serif; color: #fff; touch-action: none; overscroll-behavior: none; }
+        
+        /* 背景层 */
+        .bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('img/bg_space.jpg') center/cover; z-index: -20; animation: breathe 15s infinite alternate; }
+        @keyframes breathe { 0% { transform: scale(1); filter: blur(4px) brightness(0.7); } 100% { transform: scale(1.15); filter: blur(8px) brightness(0.9); } }
+        
+        #sandCanvas { position: fixed; top: 0; left: 0; z-index: -10; pointer-events: none; }
+
+        /* 头部整体布局调整 */
+        .header-nav-wrap { position: fixed; top: 30px; width: 100%; padding: 0 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 100; }
+        
+        /* 左侧高级纯黑英文文案区域（3行） */
+        .brand-text-group { 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; /* 稍微加大了行间距，让大标题和两行小字之间更有呼吸感 */
+                    text-align: left;
+                    font-family: 'Inter', sans-serif;
+                    
+                    /* 保持你之前调整的更下更右的位置 */
+                    margin-top: 40px;   
+                    margin-left: 30px;  
+                }
+        
+                /* 1. 第一行大字：纯黑字体 + 白色发光阴影 + 更大字号 */
+                .brand-main {
+                    color: #002FA7;
+                    font-size: 2.2rem; /* 从 1.6rem 放大到 2.2rem，使其更有视觉冲击力 */
+                    font-weight: 800;
+                    letter-spacing: 0.05em;
+                    line-height: 1.1;
+                    
+                    /* 💡 白色阴影效果：多层白色高光叠加，在浅色背景中为黑色大字修饰出一圈精致的亮边 */
+					text-shadow: 
+					                0px 0px 2px rgba(255, 255, 255, 1),
+					                0px 0px 2px rgba(255, 255, 255, 0.8),
+					                1px 1px 0px rgba(255, 255, 255, 0.9);
+                }
+        
+                /* 2. 第二行小字：保持原样（纯黑 + 适合浅色背景的微弱暗影） */
+                .brand-sub {
+                    color: #FFFFFF;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    letter-spacing: 0.15em;
+                    opacity: 0.9;
+                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 淡淡的暗影，保障浅色背景上的清晰度 */
+                }
+        
+                /* 3. 第三行小字：保持原样（纯黑 + 适合浅色背景的微弱暗影） */
+                .brand-info {
+                    color: #FFFFFF;
+                    font-size: 0.7rem;
+                    font-weight: 400;
+                    letter-spacing: 0.2em;
+                    opacity: 0.75;
+                    margin-top: 2px;
+                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+                }
+       
+        .top-right { display: flex; gap: 30px; margin-top: 5px; }
+        .nav-item { width: 80px; text-align: center; cursor: pointer; position: relative; padding-bottom: 5px; font-size: 1.2rem; font-weight: 700;}
+        .nav-line { position: absolute; bottom: 0; left: 0; width: 0; height: 4px; transition: 0.3s; }
+        
+        /* 保持原本的三个颜色 */
+        .nav-item:nth-child(1) .nav-line { background: #FF9900; }
+        .nav-item:nth-child(2) .nav-line { background: #FFD700; }
+        .nav-item:nth-child(3) .nav-line { background: #33FF66; }
+        .nav-item:hover .nav-line { width: 100%; }
+
+        .bottom-left { position: fixed; bottom: 40px; left: 40px; z-index: 100; display: flex; gap: 20px; }
+        .icon-box { width: 60px; height: 60px; border: 1px solid #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.4s; font-size: 1.5rem; }
+        
+        /* 保持原本的三个颜色 */
+        .icon-box:nth-child(1):hover { background: #FF9900; border-color: #FF9900; }
+        .icon-box:nth-child(2):hover { background: #FFD700; border-color: #FFD700; }
+        .icon-box:nth-child(3):hover { background: #33FF66; border-color: #33FF66; }
+
+        .stage { position: absolute; top: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .carousel { width: 100vw; height: 24vh; position: relative; transform-style: preserve-3d; }
+        
+        /* 卡片基础样式 */
+        .card { 
+            position: absolute; left: 50%; margin-left: -12.5vw; width: 25vw; height: 100%; 
+            background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;
+            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.3); 
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border-radius: 8px;
+            text-decoration: none; color: #fff; cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* 卡片悬停微交互（边框变亮、背光柔和微发光） */
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+        }
+
+        @media (max-width: 600px) {
+            .brand-main { font-size: 1.2rem; }
+            .brand-sub { font-size: 0.75rem; }
+            .brand-info { font-size: 0.6rem; }
+            .top-right { display: none; }
+            .card { width: 50vw; margin-left: -25vw; }
+        }
+		.bottom-right-panel {
+		            position: fixed;
+		            bottom: 40px;
+		            right: 40px;
+		            z-index: 100;
+		            display: flex;
+		            flex-direction: column;
+		            align-items: flex-end; /* 右对齐 */
+		            gap: 4px;
+		            font-family: 'Inter', sans-serif;
+		            pointer-events: none; /* 防止挡住鼠标拖拽卡片 */
+		        }
+		        
+		        /* 顶部带有蓝色系的精细装饰线 */
+		        .panel-line {
+		                    width: 60px;        /* 💡 从 40px 增长到 60px，按比例拉长 */
+		                    height: 1px;
+		                    background: #002FA7; 
+		                    margin-bottom: 6px; /* 💡 稍微拉大与下方文字的间距 */
+		                    opacity: 0.7;
+		                }
+		        
+		                /* 2. 第一行：FPS / 创意状态状态字 */
+		                .panel-status {
+		                    font-size: 0.9rem;  /* 💡 从 0.7rem 放大到 0.9rem */
+		                    font-weight: 700;
+		                    letter-spacing: 0.15em;
+		                    color: #1A2A3A; 
+		                    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+		                }
+		        
+		                /* 3. 第二行：全自动实时动态时钟 */
+		                .panel-time {
+		                    font-size: 0.8rem;  /* 💡 从 0.65rem 放大到 0.8rem */
+		                    font-weight: 400;
+		                    letter-spacing: 0.2em;
+		                    color: #24364A;
+		                    opacity: 0.8;
+		                    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+		                }
+    </style>
+</head>
+<body>
+    <audio id="hoverSound" src="img/3.mp3" preload="auto"></audio>
+    <audio id="bgm" loop preload="auto"><source src="img/2.mp3" type="audio/mpeg"></audio>
+    
+    <div class="bg-layer"></div>
+    <canvas id="sandCanvas"></canvas>
+
+    <div class="header-nav-wrap">
+        <!-- 去掉了原中文字体，改换为3行极简正经的黑色英文字体排版 -->
+        <div class="brand-text-group">
+            <div class="brand-main">STUDIO LUMIO / FILM PORTFOLIO</div>
+            <div class="brand-sub">VISUAL STORYTELLING & POST-PRODUCTION</div>
+            <div class="brand-info">CURATED MOTION PICTURES FROM 2024 TO 2026</div>
+        </div>
+        
+        <div class="top-right">
+            <div class="nav-item" onclick="window.location.href='start.html'">入场<div class="nav-line"></div></div>
+            <div class="nav-item">转场<div class="nav-line"></div></div>
+            <div class="nav-item">离场<div class="nav-line"></div></div>
+        </div>
+    </div>
+
+    <div class="stage">
+        <div class="carousel" id="carousel">
+            <script> 
+                // 保持原汁原味的卡片文字结构
+                for(let i=0; i<12; i++) {
+                    document.write(`
+                        <a href="project${i+1}.html" class="card" 
+                           style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('img/p${i+1}.jpg');">
+                           PROJECT 0${i+1}
+                        </a>
+                    `);
+                }
+            </script>
+        </div>
+    </div>
+
+    <div class="bottom-left">
+        <div class="icon-box">💬</div><div class="icon-box">✉️</div><div class="icon-box">☎️</div>
+		<div class="bottom-right-panel">
+		        <div class="panel-line"></div>
+		        <div class="panel-status">60.00 FPS / CREATIVE ACTIVE</div>
+		        <div class="panel-time" id="digitalClock">00:00:00 UTC+8</div>
+		    </div>
+    </div>
+
+    <script>
+        const bgm = document.getElementById('bgm');
+        const shouldPlay = new URLSearchParams(window.location.search).get('music') === '1';
+        let musicStarted = false;
+        function tryPlayMusic() { if (shouldPlay && !musicStarted) { bgm.play().then(() => { musicStarted = true; }).catch(() => {}); } }
+
+        const canvas = document.getElementById('sandCanvas');
+        const ctx = canvas.getContext('2d');
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.onresize = resize; resize();
+        let grains = Array.from({length: window.innerWidth < 600 ? 600 : 1200}, () => ({x: Math.random() * canvas.width, y: Math.random() * canvas.height, vy: Math.random() * 0.5 + 0.2, size: Math.random() * 2}));
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "rgba(255,255,255,0.7)"; grains.forEach(g => { g.y += g.vy; if(g.y > canvas.height) g.y = 0; ctx.fillRect(g.x, g.y, g.size, g.size); }); requestAnimationFrame(animate); }
+        animate();
+
+        const cards = document.querySelectorAll('.card');
+        let rotation = 0;
+        function update(rot) {
+            cards.forEach((card, i) => {
+                const angle = ((i / cards.length) * 360) + rot;
+                const rad = angle * (Math.PI / 180);
+                // 保持 750px 的加宽跨度，完美适配新标题与导航边界
+                card.style.transform = `translateX(${Math.sin(rad)*750}px) translateZ(${Math.cos(rad)*300}px) translateY(${Math.sin(rad*1.5)*50}px) rotateY(${-angle}deg) scale(${Math.cos(rad)*0.3+0.7})`;
+                card.style.opacity = Math.cos(rad)*0.5 + 0.5;
+            });
+        }
+        update(0);
+        
+        let isDown = false, startX;
+        const sensitivity = window.innerWidth < 600 ? 0.4 : 0.2;
+        const handleDown = (x) => { isDown = true; startX = x; tryPlayMusic(); };
+        const handleMove = (x) => { if(isDown) { rotation += (x - startX) * sensitivity; update(rotation); startX = x; cards.forEach(c => c.style.pointerEvents = 'none'); } };
+        const handleUp = () => { isDown = false; setTimeout(() => cards.forEach(c => c.style.pointerEvents = 'auto'), 100); };
+
+        window.addEventListener('mousedown', (e) => handleDown(e.clientX));
+        window.addEventListener('mousemove', (e) => handleMove(e.clientX));
+        window.addEventListener('mouseup', handleUp);
+        window.addEventListener('touchstart', (e) => handleDown(e.touches[0].clientX));
+        window.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientX));
+        window.addEventListener('touchend', handleUp);
+        window.addEventListener('click', tryPlayMusic);
+
+        const hoverSound = document.getElementById('hoverSound');
+        document.querySelectorAll('.nav-item, .icon-box').forEach(el => {
+            el.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(()=>{}); });
+        });
+		function updateClock() {
+		            const now = new Date();
+		            const hours = String(now.getHours()).padStart(2, '0');
+		            const minutes = String(now.getMinutes()).padStart(2, '0');
+		            const seconds = String(now.getSeconds()).padStart(2, '0');
+		            
+		            // 获取当前用户的本地时区名称（例如 UTC+8 或 GMT+9）
+		            const offset = -now.getTimezoneOffset() / 60;
+		            const timezoneStr = `GMT${offset >= 0 ? '+' : ''}${offset}`;
+		            
+		            document.getElementById('digitalClock').innerHTML = `${hours}:${minutes}:${seconds} // ${timezoneStr}`;
+		        }
+		        setInterval(updateClock, 1000);
+		        updateClock(); // 初始化执行一次
+    </script>
+</body>
+</html>
