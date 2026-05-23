@@ -3,94 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Lumio</title>
+    <title>XIEXIEXIE</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <!-- 引入了一款非常正经、高级且适合做副标题的现代无衬线英文字体 Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000; overflow: hidden; font-family: 'Anton', sans-serif; color: #fff; touch-action: none; overscroll-behavior: none; }
         
         /* 背景层 */
+		/* 强制导航栏和左下角图标在拖动时始终响应点击 */
+		.header-nav-wrap, 
+		.top-right, 
+		.mobile-menu-icon, 
+		.bottom-left {
+		    pointer-events: auto !important;
+		    z-index: 9999 !important; /* 确保它们始终在最顶层 */
+		}
+		
         .bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('img/bg_space.jpg') center/cover; z-index: -20; animation: breathe 15s infinite alternate; }
         @keyframes breathe { 0% { transform: scale(1); filter: blur(4px) brightness(0.7); } 100% { transform: scale(1.15); filter: blur(8px) brightness(0.9); } }
         
         #sandCanvas { position: fixed; top: 0; left: 0; z-index: -10; pointer-events: none; }
 
-        /* 头部整体布局调整 */
+        /* 头部整体布局 */
         .header-nav-wrap { position: fixed; top: 30px; width: 100%; padding: 0 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 100; }
         
-        /* 左侧高级纯黑英文文案区域（3行） */
+        /* 左侧高级英文文案区域 */
         .brand-text-group { 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 6px; /* 稍微加大了行间距，让大标题和两行小字之间更有呼吸感 */
-                    text-align: left;
-                    font-family: 'Inter', sans-serif;
-                    
-                    /* 保持你之前调整的更下更右的位置 */
-                    margin-top: 40px;   
-                    margin-left: 30px;  
-                }
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            margin-top: 40px;   
+            margin-left: 30px;  
+        }
         
-                /* 1. 第一行大字：纯黑字体 + 白色发光阴影 + 更大字号 */
-                .brand-main {
-                    color: #002FA7;
-                    font-size: 2.2rem; /* 从 1.6rem 放大到 2.2rem，使其更有视觉冲击力 */
-                    font-weight: 800;
-                    letter-spacing: 0.05em;
-                    line-height: 1.1;
-                    
-                    /* 💡 白色阴影效果：多层白色高光叠加，在浅色背景中为黑色大字修饰出一圈精致的亮边 */
-					text-shadow: 
-					                0px 0px 2px rgba(255, 255, 255, 1),
-					                0px 0px 2px rgba(255, 255, 255, 0.8),
-					                1px 1px 0px rgba(255, 255, 255, 0.9);
-                }
+        .brand-main {
+            color: #002FA7;
+            font-size: 2.2rem; 
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+            text-shadow: 0px 0px 2px rgba(255, 255, 255, 1), 0px 0px 2px rgba(255, 255, 255, 0.8), 1px 1px 0px rgba(255, 255, 255, 0.9);
+        }
         
-                /* 2. 第二行小字：保持原样（纯黑 + 适合浅色背景的微弱暗影） */
-                .brand-sub {
-                    color: #FFFFFF;
-                    font-size: 0.85rem;
-                    font-weight: 700;
-                    letter-spacing: 0.15em;
-                    opacity: 0.9;
-                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 淡淡的暗影，保障浅色背景上的清晰度 */
-                }
-        
-                /* 3. 第三行小字：保持原样（纯黑 + 适合浅色背景的微弱暗影） */
-                .brand-info {
-                    color: #FFFFFF;
-                    font-size: 0.7rem;
-                    font-weight: 400;
-                    letter-spacing: 0.2em;
-                    opacity: 0.75;
-                    margin-top: 2px;
-                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-                }
+        .brand-sub { color: #FFFFFF; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); }
+        .brand-info { color: #FFFFFF; font-size: 0.7rem; font-weight: 400; letter-spacing: 0.2em; opacity: 0.75; margin-top: 2px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); }
        
-        .top-right { display: flex; gap: 30px; margin-top: 5px; }
-        .nav-item { width: 80px; text-align: center; cursor: pointer; position: relative; padding-bottom: 5px; font-size: 1.2rem; font-weight: 700;}
+        /* 移动端专属菜单图标，默认隐藏 */
+        .mobile-menu-icon {
+            display: none;
+            font-size: 1.8rem;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+            user-select: none;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* 右侧导航栏 */
+        .top-right { display: flex; gap: 30px; margin-top: 45px; }
+        .nav-item { width: 80px; text-align: center; cursor: pointer; position: relative; padding-bottom: 5px; font-size: 1.2rem; font-weight: 700; font-family: 'Inter', sans-serif;}
         .nav-line { position: absolute; bottom: 0; left: 0; width: 0; height: 4px; transition: 0.3s; }
         
-        /* 保持原本的三个颜色 */
         .nav-item:nth-child(1) .nav-line { background: #FF9900; }
         .nav-item:nth-child(2) .nav-line { background: #FFD700; }
         .nav-item:nth-child(3) .nav-line { background: #33FF66; }
         .nav-item:hover .nav-line { width: 100%; }
 
-        .bottom-left { position: fixed; bottom: 40px; left: 40px; z-index: 100; display: flex; gap: 20px; }
-        .icon-box { width: 60px; height: 60px; border: 1px solid #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.4s; font-size: 1.5rem; }
+        /* 底部左侧交互图标 (保持原有正方形矩形) */
+        .bottom-left { position: fixed; bottom: 40px; left: 40px; z-index: 100; display: flex; gap: 20px; transition: 0.4s; }
+        .icon-box { 
+            width: 60px; 
+            height: 60px; 
+            border: 1px solid #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: 0.4s; 
+            /* 去掉原有的 font-size */
+        }
         
-        /* 保持原本的三个颜色 */
-        .icon-box:nth-child(1):hover { background: #FF9900; border-color: #FF9900; }
-        .icon-box:nth-child(2):hover { background: #FFD700; border-color: #FFD700; }
-        .icon-box:nth-child(3):hover { background: #33FF66; border-color: #33FF66; }
+        /* 确保图片在图标盒子里垂直水平居中，并限制大小 */
+        .icon-box img {
+            width: 50%; /* 图标占盒子的一半大小比较协调 */
+            height: 50%;
+            object-fit: contain;
+            filter: brightness(0) invert(1); /* 这一行非常关键：如果你的原图是黑色，加上这行会自动变成白色 */
+            transition: 0.4s;
+        }
+        
+        /* 鼠标悬浮时，让图标恢复原色（如果有颜色）或者保持清晰 */
+        .icon-box:hover img {
+            filter: brightness(1) invert(0); 
+        }
 
+        /* 底部右侧状态参数面板 */
+        .bottom-right-panel {
+            position: fixed; bottom: 40px; right: 40px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-family: 'Inter', sans-serif; pointer-events: none; transition: 0.4s;
+        }
+        .panel-line { width: 60px; height: 1px; background: #002FA7; margin-bottom: 6px; opacity: 0.7; }
+        .panel-status { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.15em; color: #1A2A3A; text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); }
+        .panel-time { font-size: 0.8rem; font-weight: 400; letter-spacing: 0.2em; color: #24364A; opacity: 0.8; text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); }
+
+        /* 中间3D舞台 */
         .stage { position: absolute; top: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .carousel { width: 100vw; height: 24vh; position: relative; transform-style: preserve-3d; }
         
-        /* 卡片基础样式 */
+        /* 卡片基础样式保持不变 */
         .card { 
             position: absolute; left: 50%; margin-left: -12.5vw; width: 25vw; height: 100%; 
             background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;
@@ -100,62 +122,198 @@
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s, border-color 0.3s, box-shadow 0.3s;
         }
 
-        /* 卡片悬停微交互（边框变亮、背光柔和微发光） */
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
-        }
+        .card:hover { border-color: rgba(255, 255, 255, 0.85); box-shadow: 0 0 30px rgba(255, 255, 255, 0.15); }
 
-        @media (max-width: 600px) {
-            .brand-main { font-size: 1.2rem; }
-            .brand-sub { font-size: 0.75rem; }
-            .brand-info { font-size: 0.6rem; }
-            .top-right { display: none; }
+        /* ================= 手机端响应式设计 ================= */
+        @media (max-width: 768px) {
+            /* 1. 标题完全居中 */
+            .header-nav-wrap { 
+                top: 20px; 
+                padding: 0 15px; 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            .brand-text-group { 
+                margin: 0; 
+                align-items: center; 
+                text-align: center; 
+            }
+            .brand-main { font-size: 1.4rem; }
+            .brand-sub { font-size: 0.65rem; }
+            .brand-info { font-size: 0.55rem; letter-spacing: 0.1em;}
+
+            /* 2. 显示汉堡菜单图标并居中放置在标题正下方 */
+            .mobile-menu-icon { display: block; }
+            
+            /* 3. 菜单改为下拉式，位于按钮正下方 */
+            .top-right {
+				position: absolute;      /* 脱离文档流，让顶点位置完全由你控制 */
+				    top: 85px;               /* 关键点：这里决定了它距离顶部的距离，调小它就能向上移 */
+                /* 基础布局 */
+                display: none; /* 初始状态，或者设为 flex 但 opacity: 0 */
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                width: 300px;
+                padding: 20px 30px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(15px);
+                border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                
+                /* 动画关键：设置过渡属性 */
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                
+                z-index: 200;
+            }
+            
+            /* 这个类专门负责显示，且带动画 */
+            .top-right.show {
+                display: flex; /* 让它显示出来 */
+                opacity: 1;    /* 变可见 */
+                transform: translateY(0); /* 滑到最终位置 */
+            }
+
+            /* 卡片尺寸调整 */
             .card { width: 50vw; margin-left: -25vw; }
+
+            /* 4. 左下角方形矩形移到视口底端居中 */
+            .bottom-left { 
+                left: 50%; 
+                transform: translateX(-50%); 
+                bottom: 40px; 
+                gap: 15px; 
+            }
+            .icon-box { width: 45px; height: 45px; font-size: 1.2rem; }
+			
+			.card {
+			    display: flex;
+			    justify-content: center;
+			    align-items: center;
+			    text-align: center;
+			    padding: 20px;
+			    /* 让文字换行 */
+			    white-space: pre-line; 
+			}
+
+            /* 5. 时钟面板缩小化为最底部装饰信息带 */
+            .bottom-right-panel {
+                bottom: 5px;
+                right: 0;
+                width: 100vw;
+                align-items: center; 
+                flex-direction: row;
+                justify-content: center;
+                gap: 10px;
+            }
+            .panel-line { display: none; }
+            .panel-status { font-size: 0.6rem; }
+            .panel-time { font-size: 0.6rem; border-left: 1px solid rgba(0,47,167,0.5); padding-left: 10px; }
         }
-		.bottom-right-panel {
-		            position: fixed;
-		            bottom: 40px;
-		            right: 40px;
-		            z-index: 100;
-		            display: flex;
-		            flex-direction: column;
-		            align-items: flex-end; /* 右对齐 */
-		            gap: 4px;
-		            font-family: 'Inter', sans-serif;
-		            pointer-events: none; /* 防止挡住鼠标拖拽卡片 */
+		@media (min-width: 769px) {
+		            .top-right { display: flex !important; }
 		        }
-		        
-		        /* 顶部带有蓝色系的精细装饰线 */
-		        .panel-line {
-		                    width: 60px;        /* 💡 从 40px 增长到 60px，按比例拉长 */
-		                    height: 1px;
-		                    background: #002FA7; 
-		                    margin-bottom: 6px; /* 💡 稍微拉大与下方文字的间距 */
-		                    opacity: 0.7;
-		                }
-		        
-		                /* 2. 第一行：FPS / 创意状态状态字 */
-		                .panel-status {
-		                    font-size: 0.9rem;  /* 💡 从 0.7rem 放大到 0.9rem */
-		                    font-weight: 700;
-		                    letter-spacing: 0.15em;
-		                    color: #1A2A3A; 
-		                    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
-		                }
-		        
-		                /* 3. 第二行：全自动实时动态时钟 */
-		                .panel-time {
-		                    font-size: 0.8rem;  /* 💡 从 0.65rem 放大到 0.8rem */
-		                    font-weight: 400;
-		                    letter-spacing: 0.2em;
-		                    color: #24364A;
-		                    opacity: 0.8;
-		                    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
-		                }
+				/* ================= 科幻感交互弹窗 ================= */
+/* ================= 极简毛玻璃交互弹窗 ================= */
+/* ================= 极简毛玻璃交互弹窗 ================= */
+.tech-overlay {
+    /* 核心修改：去掉 display: none，改用 visibility 和 pointer-events 控制隐藏 */
+    visibility: hidden; 
+    pointer-events: none; /* 隐藏时鼠标无法点击 */
+    display: flex; /* 保持 flex 布局始终存在，避免重排版卡顿 */
+    
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4); 
+    z-index: 10000;
+    justify-content: center; 
+    align-items: center;
+    
+    opacity: 0; 
+    /* 增加 visibility 的过渡，配合 opacity */
+    transition: opacity 0.4s ease, visibility 0.4s ease; 
+    will-change: opacity; /* 开启 GPU 硬件加速 */
+}
+
+.tech-overlay.active { 
+    visibility: visible; 
+    pointer-events: auto; /* 显示时恢复点击 */
+    opacity: 1; 
+}
+
+.tech-modal {
+    /* 保持你之前的样式，只需在最后加上一行 will-change */
+    position: relative;
+    width: 380px; 
+    max-width: 85vw;
+    background: rgba(45, 45, 50, 0.7); 
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px); 
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px; 
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    padding: 40px 30px;
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    overflow: hidden;
+    
+    will-change: transform; /* 开启 GPU 硬件加速，让缩放更丝滑 */
+}
+
+/* 扫描线动画 - 改为高级的银白色渐变 */
+.tech-scanline {
+    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: scan 3s infinite linear;
+    opacity: 0.6;
+    pointer-events: none; /* 防止干扰鼠标点击 */
+}
+@keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+/* 弹窗内容排版 */
+.tech-close {
+    position: absolute; top: 15px; right: 20px; font-size: 2rem; font-family: 'Inter', sans-serif;
+    color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; z-index: 10;
+    line-height: 1;
+}
+.tech-close:hover { color: #fff; transform: rotate(90deg); }
+
+.tech-title {
+    font-family: 'Anton', sans-serif; font-size: 1.8rem; letter-spacing: 0.1em;
+    color: #fff; 
+}
+/* 标题下方的短线 */
+.tech-line { 
+    width: 40px; height: 3px; background: #fff; margin: 10px 0 20px 0; 
+    border-radius: 3px;
+}
+.tech-desc {
+    font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 400; line-height: 1.8;
+    color: rgba(255,255,255,0.9); white-space: pre-line; letter-spacing: 0.05em;
+}
     </style>
 </head>
 <body>
+	<!-- 科技感交互弹窗 -->
+	<div id="techOverlay" class="tech-overlay">
+	    <div class="tech-modal" id="techModal">
+	        
+	        <!-- 扫描线动画装饰 -->
+	        <div class="tech-scanline"></div>
+	
+	        <div class="tech-close" id="techCloseBtn">×</div>
+	        
+	        <!-- 内容区 -->
+	        <div class="tech-content">
+	            <div class="tech-title" id="techTitle">TITLE</div>
+	            <div class="tech-line"></div>
+	            <div class="tech-desc" id="techDesc">Content goes here...</div>
+	        </div>
+	    </div>
+	</div>
     <audio id="hoverSound" src="img/3.mp3" preload="auto"></audio>
     <audio id="bgm" loop preload="auto"><source src="img/2.mp3" type="audio/mpeg"></audio>
     
@@ -163,104 +321,261 @@
     <canvas id="sandCanvas"></canvas>
 
     <div class="header-nav-wrap">
-        <!-- 去掉了原中文字体，改换为3行极简正经的黑色英文字体排版 -->
         <div class="brand-text-group">
-            <div class="brand-main">STUDIO LUMIO / FILM PORTFOLIO</div>
-            <div class="brand-sub">VISUAL STORYTELLING & POST-PRODUCTION</div>
-            <div class="brand-info">CURATED MOTION PICTURES FROM 2024 TO 2026</div>
+            <div class="brand-main">FILM AND TELEVISION</div>
+            <div class="brand-sub">内容持续更新中点击不了就是没做！</div>
+            <div class="brand-info">收录2026年部分剪辑作品，祝您天天开心！</div>
         </div>
         
-        <div class="top-right">
+        <!-- 手机端专属下拉菜单触控图标 -->
+        <div class="mobile-menu-icon" id="mobileMenuBtn">☰</div>
+        
+        <div class="top-right" id="navMenu">
             <div class="nav-item" onclick="window.location.href='index.html'">入场<div class="nav-line"></div></div>
             <div class="nav-item">转场<div class="nav-line"></div></div>
             <div class="nav-item">离场<div class="nav-line"></div></div>
         </div>
     </div>
 
-    <div class="stage">
-        <div class="carousel" id="carousel">
-            <script> 
-                // 保持原汁原味的卡片文字结构
-                for(let i=0; i<12; i++) {
-                    document.write(`
-                        <a href="project${i+1}.html" class="card" 
-                           style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('img/p${i+1}.jpg');">
-                           PROJECT 0${i+1}
-                        </a>
-                    `);
-                }
-            </script>
-        </div>
+<div class="stage">
+    <div class="carousel" id="carousel">
+        <!-- 这里不需要写代码了，JS 会自动把卡片塞进来 -->
     </div>
-
+	
+<!-- 更新后的视频播放遮罩层 -->
+<div id="videoOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.98); z-index:99999; justify-content:center; align-items:center;">
+    <video id="popupVideo" 
+           style="width: 80%; max-height: 90vh; object-fit: contain;" 
+           controls 
+           playsinline>
+        <source src="" type="video/mp4">
+        您的浏览器不支持视频播放。
+    </video>
+    <div id="closeVideo" style="position:absolute; top:30px; right:30px; color:#fff; font-size:3rem; cursor:pointer; font-family:sans-serif;">×</div>
+</div>
+	
+</div>
     <div class="bottom-left">
-        <div class="icon-box">💬</div><div class="icon-box">✉️</div><div class="icon-box">☎️</div>
-		<div class="bottom-right-panel">
-		        <div class="panel-line"></div>
-		        <div class="panel-status">60.00 FPS / CREATIVE ACTIVE</div>
-		        <div class="panel-time" id="digitalClock">00:00:00 UTC+8</div>
-		    </div>
+        <div class="icon-box"><img src="img/wechat.png" alt="Chat"></div>
+            <div class="icon-box"><img src="img/email.png" alt="Mail"></div>
+            <div class="icon-box"><img src="img/phone.png" alt="Phone"></div>
     </div>
 
-    <script>
-        const bgm = document.getElementById('bgm');
-        const shouldPlay = new URLSearchParams(window.location.search).get('music') === '1';
-        let musicStarted = false;
-        function tryPlayMusic() { if (shouldPlay && !musicStarted) { bgm.play().then(() => { musicStarted = true; }).catch(() => {}); } }
+    <div class="bottom-right-panel">
+        <div class="panel-line"></div>
+        <div class="panel-status">祝福你，拥有很长，很好的新一年。</div>
+        <div class="panel-time" id="digitalClock">00:00:00 UTC+8</div>
+    </div>
 
-        const canvas = document.getElementById('sandCanvas');
-        const ctx = canvas.getContext('2d');
-        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-        window.onresize = resize; resize();
-        let grains = Array.from({length: window.innerWidth < 600 ? 600 : 1200}, () => ({x: Math.random() * canvas.width, y: Math.random() * canvas.height, vy: Math.random() * 0.5 + 0.2, size: Math.random() * 2}));
-        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "rgba(255,255,255,0.7)"; grains.forEach(g => { g.y += g.vy; if(g.y > canvas.height) g.y = 0; ctx.fillRect(g.x, g.y, g.size, g.size); }); requestAnimationFrame(animate); }
-        animate();
+<script>
+    // 1. 全局资源与初始化
+    const bgm = document.getElementById('bgm');
+    const hoverSound = document.getElementById('hoverSound');
+    const shouldPlay = new URLSearchParams(window.location.search).get('music') === '1';
+    let musicStarted = false;
+    function tryPlayMusic() { if (shouldPlay && !musicStarted) { bgm.play().then(() => { musicStarted = true; }).catch(() => {}); } }
 
-        const cards = document.querySelectorAll('.card');
-        let rotation = 0;
-        function update(rot) {
-            cards.forEach((card, i) => {
-                const angle = ((i / cards.length) * 360) + rot;
-                const rad = angle * (Math.PI / 180);
-                // 保持 750px 的加宽跨度，完美适配新标题与导航边界
-                card.style.transform = `translateX(${Math.sin(rad)*750}px) translateZ(${Math.cos(rad)*300}px) translateY(${Math.sin(rad*1.5)*50}px) rotateY(${-angle}deg) scale(${Math.cos(rad)*0.3+0.7})`;
-                card.style.opacity = Math.cos(rad)*0.5 + 0.5;
-            });
-        }
-        update(0);
+    // 2. 粒子背景
+    const canvas = document.getElementById('sandCanvas');
+    const ctx = canvas.getContext('2d');
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    window.onresize = resize; resize();
+    let grains = Array.from({length: window.innerWidth < 600 ? 600 : 1200}, () => ({x: Math.random() * canvas.width, y: Math.random() * canvas.height, vy: Math.random() * 0.5 + 0.2, size: Math.random() * 2}));
+    function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "rgba(255,255,255,0.7)"; grains.forEach(g => { g.y += g.vy; if(g.y > canvas.height) g.y = 0; ctx.fillRect(g.x, g.y, g.size, g.size); }); requestAnimationFrame(animate); }
+    animate();
+
+    // 3. 项目数据与卡片生成
+    const projects = [
+        { img: 'img/p1.jpg', video: 'videos/v1.mp4' ,title: 'IP口播'},
+        { img: 'img/p2.jpg', video: 'videos/v2.mp4' ,title: 'AI+口播'},
+        { img: 'img/p3.jpg', video: 'videos/v3.mp4' ,title: '广告'},
+        { img: 'img/p4.jpg', video: 'videos/v4.mp4' ,title: '文创品牌合作'},
+        { img: 'img/p5.jpg', video: 'videos/v5.mp4' ,title: '城市宣传纪录'},
+        { img: 'img/p6.jpg', video: 'videos/v6.mp4' ,title: '家居精剪'},
+        { img: 'img/p7.jpg', video: 'videos/v7.mp4' ,title: 'VLOG'},
+        { img: 'img/p8.jpg', video: 'videos/v8.mp4' ,title: '活动快剪'},
+        { img: 'img/p9.jpg', video: 'videos/v9.mp4' ,title: '探店VLOG'}
+    ];
+
+    const carousel = document.getElementById('carousel');
+    const videoOverlay = document.getElementById('videoOverlay');
+    const popupVideo = document.getElementById('popupVideo');
+    const closeVideo = document.getElementById('closeVideo');
+
+    projects.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${item.img}')`;
+        card.innerHTML = `<span style="font-size: 25px; letter-spacing: 5px; font-weight: bold; font-family: 'Arial Black', Gadget, sans-serif !important;">${item.title}</span>`;
         
-        let isDown = false, startX;
-        const sensitivity = window.innerWidth < 600 ? 0.4 : 0.2;
-        const handleDown = (x) => { isDown = true; startX = x; tryPlayMusic(); };
-        const handleMove = (x) => { if(isDown) { rotation += (x - startX) * sensitivity; update(rotation); startX = x; cards.forEach(c => c.style.pointerEvents = 'none'); } };
-        const handleUp = () => { isDown = false; setTimeout(() => cards.forEach(c => c.style.pointerEvents = 'auto'), 100); };
-
-        window.addEventListener('mousedown', (e) => handleDown(e.clientX));
-        window.addEventListener('mousemove', (e) => handleMove(e.clientX));
-        window.addEventListener('mouseup', handleUp);
-        window.addEventListener('touchstart', (e) => handleDown(e.touches[0].clientX));
-        window.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientX));
-        window.addEventListener('touchend', handleUp);
-        window.addEventListener('click', tryPlayMusic);
-
-        const hoverSound = document.getElementById('hoverSound');
-        document.querySelectorAll('.nav-item, .icon-box').forEach(el => {
-            el.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(()=>{}); });
+        card.addEventListener('click', () => {
+            if (bgm) bgm.pause();
+            popupVideo.src = item.video;
+            videoOverlay.style.display = 'flex';
+            popupVideo.play();
         });
-		function updateClock() {
-		            const now = new Date();
-		            const hours = String(now.getHours()).padStart(2, '0');
-		            const minutes = String(now.getMinutes()).padStart(2, '0');
-		            const seconds = String(now.getSeconds()).padStart(2, '0');
-		            
-		            // 获取当前用户的本地时区名称（例如 UTC+8 或 GMT+9）
-		            const offset = -now.getTimezoneOffset() / 60;
-		            const timezoneStr = `GMT${offset >= 0 ? '+' : ''}${offset}`;
-		            
-		            document.getElementById('digitalClock').innerHTML = `${hours}:${minutes}:${seconds} // ${timezoneStr}`;
-		        }
-		        setInterval(updateClock, 1000);
-		        updateClock(); // 初始化执行一次
-    </script>
+        carousel.appendChild(card);
+    });
+
+    closeVideo.addEventListener('click', () => {
+        videoOverlay.style.display = 'none';
+        popupVideo.pause();
+        popupVideo.src = "";
+        if (bgm) bgm.play();
+    });
+
+    // 4. 3D 渲染核心
+    const cards = document.querySelectorAll('.card');
+    let rotation = -15;
+    function update(rot) {
+        const isMobile = window.innerWidth <= 768;
+        const rx = isMobile ? window.innerWidth * 0.45 : 750;
+        const rz = isMobile ? 180 : 300;
+        cards.forEach((card, i) => {
+            const angle = ((i / cards.length) * 360) + rot;
+            const rad = angle * (Math.PI / 180);
+            card.style.transform = `translateX(${Math.sin(rad)*rx}px) translateZ(${Math.cos(rad)*rz}px) translateY(${Math.sin(rad*1.5)*50}px) rotateY(${-angle}deg) scale(${Math.cos(rad)*0.3+0.6})`;
+            card.style.opacity = Math.cos(rad)*0.5 + 0.5;
+        });
+    }
+    update(0);
+
+    // 5. 交互监听
+    let isDown = false, startX;
+    const sensitivity = window.innerWidth < 768 ? 0.35 : 0.2;
+    const handleDown = (x) => { isDown = true; startX = x; tryPlayMusic(); };
+   // 修改 handleMove 里的这行：
+   // 不要使用全局循环，只针对 carousel 下的 card
+   const handleMove = (x) => { 
+       if(isDown) { 
+           rotation += (x - startX) * sensitivity; 
+           update(rotation); 
+           startX = x; 
+           // 确保只禁用卡片，不影响导航栏
+           document.querySelectorAll('.card').forEach(c => c.style.pointerEvents = 'none'); 
+       } 
+   };
+    const handleUp = () => { isDown = false; setTimeout(() => cards.forEach(c => c.style.pointerEvents = 'auto'), 100); };
+
+    window.addEventListener('mousedown', (e) => handleDown(e.clientX));
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX));
+    window.addEventListener('mouseup', handleUp);
+    window.addEventListener('touchstart', (e) => handleDown(e.touches[0].clientX));
+    window.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientX));
+    window.addEventListener('touchend', handleUp);
+
+    // 6. 手机菜单逻辑
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+    
+    mobileMenuBtn.addEventListener('click', (e) => {
+        if (navMenu.classList.contains('show')) {
+            // 如果正在显示，先移除类，等动画结束再隐藏
+            navMenu.classList.remove('show');
+            setTimeout(() => { navMenu.style.display = 'none'; }, 300);
+        } else {
+            // 如果隐藏，先设置为 flex，再添加类触发动画
+            navMenu.style.display = 'flex';
+            // 强制重绘，否则动画不会触发
+            void navMenu.offsetWidth; 
+            navMenu.classList.add('show');
+        }
+        e.stopPropagation();
+    });
+    
+    // 点击外部关闭
+    // 点击外部关闭
+        window.addEventListener('click', (e) => {
+            tryPlayMusic();
+            // 修复关键：仅在手机端屏幕宽度下，才执行点击外部隐藏菜单的逻辑
+            if (window.innerWidth <= 768) {
+                if (!e.target.closest('#navMenu') && !e.target.closest('#mobileMenuBtn')) {
+                    navMenu.classList.remove('show');
+                    setTimeout(() => { 
+                        // 再次检查以防在300ms内切换了屏幕尺寸
+                        if (window.innerWidth <= 768) {
+                            navMenu.style.display = 'none'; 
+                        }
+                    }, 300);
+                }
+            }
+        });
+
+    document.querySelectorAll('.nav-item, .icon-box, .mobile-menu-icon').forEach(el => {
+        el.addEventListener('mouseenter', () => { hoverSound.currentTime = 0; hoverSound.play().catch(()=>{}); });
+    });
+
+    function updateClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('digitalClock');
+        if (clockEl) clockEl.innerHTML = now.toTimeString().split(' ')[0] + ' UTC+8';
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+	// ================= 7. 左下角科技感弹窗逻辑 =================
+	    // 在这里配置你要展示的信息
+	    // ================= 7. 左下角科技感弹窗逻辑 =================
+	       // ================= 7. 左下角科技感弹窗逻辑 =================
+	           const contactInfo = [
+	               {
+	                   title: "WECHAT INTERCOM",
+	                   content: "ID: 1056301798\n\n欢迎添加微信与我交流。\n扫码或搜索ID均可建立通讯链接。",
+	                   themeColor: "#FF9900" 
+	               },
+	               {
+	                   title: "EMAIL TERMINAL",
+	                   content: "MAIL: 1056301798@qq.com\n\n系统将于24个地球时内响应。",
+	                   themeColor: "#FFD700" 
+	               },
+	               {
+	                   title: "VOICE CHANNEL",
+	                   content: "TEL: +86 18740856317\n\n你获得了一串神秘数字。",
+	                   themeColor: "#33FF66" 
+	               }
+	           ];
+	       
+	           const iconBoxes = document.querySelectorAll('.bottom-left .icon-box');
+	           const techOverlay = document.getElementById('techOverlay');
+	           const techTitle = document.getElementById('techTitle');
+	           const techDesc = document.getElementById('techDesc');
+	           const techCloseBtn = document.getElementById('techCloseBtn');
+	           const techLine = document.querySelector('.tech-line');
+	       
+	           iconBoxes.forEach((box, index) => {
+	               box.addEventListener('click', () => {
+	                   // 设置文字内容
+	                   techTitle.innerText = contactInfo[index].title;
+	                   techDesc.innerText = contactInfo[index].content;
+	                   
+	                   // 动态颜色
+	                   let color = contactInfo[index].themeColor;
+	                   techLine.style.background = color;
+	                   techLine.style.boxShadow = `0 0 10px ${color}`;
+	                   
+	                   // 显示弹窗 (仅通过 class 控制，丝滑过渡)
+	                   techOverlay.classList.add('active');
+	                   
+	                   // 播放音效
+	                   if(typeof hoverSound !== 'undefined') {
+	                       hoverSound.currentTime = 0;
+	                       hoverSound.play().catch(()=>{});
+	                   }
+	               });
+	           });
+	       
+	           // 关闭逻辑 (更简洁)
+	           const closeTechModal = () => {
+	               techOverlay.classList.remove('active');
+	           };
+	       
+	           techCloseBtn.addEventListener('click', closeTechModal);
+	           
+	           // 点击背景关闭
+	           techOverlay.addEventListener('click', (e) => {
+	               if (e.target === techOverlay) {
+	                   closeTechModal();
+	               }
+	           });
+</script>
 </body>
 </html>
